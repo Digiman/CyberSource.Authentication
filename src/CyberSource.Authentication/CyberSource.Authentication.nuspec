@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>CyberSource.Authentication</id>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <title>CyberSource.Authentication</title>
     <authors>CyberSource Corporation</authors>
     <owners>CyberSource</owners>
@@ -11,6 +11,11 @@
     <description>Use this SDK to generate Authentication Headers to be sent for the Cybersource REST API Calls</description>
     <releaseNotes>Authentication SDK for CyberSource REST APIs. Reworked and modernized.</releaseNotes>
     <dependencies>
+      <group targetFramework="netstandard2.0">
+        <dependency id="jose-jwt" version="2.4.0" />
+        <dependency id="NLog" version="4.5.11" />
+        <dependency id="System.Runtime.Caching" version="4.5.0" />
+      </group>
       <group targetFramework="net461">
         <dependency id="jose-jwt" version="2.4.0" />
         <dependency id="NLog" version="4.5.11" />
@@ -18,6 +23,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\CyberSource.Authentication.dll" target="lib\net461\CyberSource.Authentication.dll" />
+    <file src="bin\Release\netstandard2.0\CyberSource.Authentication.dll" target="lib\netstandard2.0\CyberSource.Authentication.dll" />
+    <file src="bin\Release\netstandard2.0\CyberSource.Authentication.xml" target="lib\netstandard2.0\CyberSource.Authentication.xml" />
+    <file src="bin\Release\netstandard2.0\CyberSource.Authentication.dll" target="lib\net461\CyberSource.Authentication.dll" />
+    <file src="bin\Release\netstandard2.0\CyberSource.Authentication.xml" target="lib\net461\CyberSource.Authentication.xml" />
   </files>
 </package>

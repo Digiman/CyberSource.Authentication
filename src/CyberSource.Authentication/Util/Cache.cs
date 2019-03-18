@@ -7,13 +7,16 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CyberSource.Authentication.Util
 {
+    // TODO: work better with cache in .NET core.
+
     public static class Cache
     {
         public static X509Certificate2 FetchCachedCertificate(string p12FilePath, string keyPassword)
         {
             try
             {
-                ObjectCache objectCache = (ObjectCache) MemoryCache.Default;
+                var objectCache = (ObjectCache) MemoryCache.Default;
+
                 X509Certificate2 x509Certificate2_1 = objectCache["certiFromP12File"] as X509Certificate2;
                 if (x509Certificate2_1 != null)
                     return x509Certificate2_1;
@@ -23,7 +26,7 @@ namespace CyberSource.Authentication.Util
                     Path.GetFullPath(p12FilePath)
                 }));
                 X509Certificate2 x509Certificate2_2 = new X509Certificate2(p12FilePath, keyPassword);
-                objectCache.Set("certiFromP12File", (object) x509Certificate2_2, policy, (string) null);
+                objectCache.Set("certiFromP12File", (object) x509Certificate2_2, policy);
                 return x509Certificate2_2;
             }
             catch (CryptographicException ex)

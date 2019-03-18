@@ -5,6 +5,8 @@ using NLog.Targets;
 
 namespace CyberSource.Authentication.Util
 {
+    // TODO: fully migrate from NLog to Microsoft Extensions Logging (to have common solution to use logs)
+
     public class LogUtility
     {
         private static LogUtility _singletonLogUtility;
