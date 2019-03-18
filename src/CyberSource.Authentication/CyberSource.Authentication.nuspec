@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>CyberSource.Authentication</id>
+    <version>0.1.0</version>
+    <title>CyberSource.Authentication</title>
+    <authors>CyberSource Corporation</authors>
+    <owners>CyberSource</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/CyberSource/cybersource-rest-auth-dotnet</projectUrl>
+    <description>Use this SDK to generate Authentication Headers to be sent for the Cybersource REST API Calls</description>
+    <releaseNotes>Authentication SDK for CyberSource REST APIs. Reworked and modernized.</releaseNotes>
+    <dependencies>
+      <group targetFramework="net461">
+        <dependency id="jose-jwt" version="2.4.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\AuthenticationSdk.dll" target="lib\net461\AuthenticationSdk.dll" />
+  </files>
+</package>
