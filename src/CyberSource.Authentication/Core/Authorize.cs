@@ -8,7 +8,10 @@ namespace CyberSource.Authentication.Core
 {
     // TODO: remove dependency from NLog here!
 
-    public class Authorize
+    /// <summary>
+    /// Implementation for authentication using HTTP signature or with JWT token.
+    /// </summary>
+    public sealed class Authorize
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly MerchantConfig _merchantConfig;

@@ -12,27 +12,24 @@ namespace CyberSource.Authentication.Util
         public static bool ValidateAuthenticationType(string authType)
         {
             if (string.IsNullOrEmpty(authType))
-                throw new Exception(string.Format("{0} No Authentication type provided in config file",
-                    (object) Constants.ErrorPrefix));
+                throw new Exception($"{(object) Constants.ErrorPrefix} No Authentication type provided in config file");
             if (Enum.IsDefined(typeof(AuthenticationType), (object) authType.ToUpper()))
                 return true;
-            throw new Exception(string.Format("{0}Invalid Auth type {1} provided in config file",
-                (object) Constants.ErrorPrefix, (object) authType));
+            throw new Exception(
+                $"{(object) Constants.ErrorPrefix}Invalid Auth type {(object) authType} provided in config file");
         }
 
         public static bool ValidateRequestType(string requestType)
         {
             if (requestType == null)
-                throw new Exception(string.Format(
-                    "{0} RequestType has not been set. Set it to any one of the Valid Values: GET/POST/PUT/DELETE",
-                    (object) Constants.ErrorPrefix));
+                throw new Exception(
+                    $"{(object) Constants.ErrorPrefix} RequestType has not been set. Set it to any one of the Valid Values: GET/POST/PUT/DELETE");
             if (requestType.Trim() == string.Empty)
-                throw new Exception(string.Format(
-                    "{0} RequestType has been set as blank. Set it to any one of the Valid Values: GET/POST/PUT/DELETE",
-                    (object) Constants.ErrorPrefix));
+                throw new Exception(
+                    $"{(object) Constants.ErrorPrefix} RequestType has been set as blank. Set it to any one of the Valid Values: GET/POST/PUT/DELETE");
             if (!Enum.IsDefined(typeof(RequestType), (object) requestType.ToUpper()))
-                throw new Exception(string.Format("{0} Invalid Request Type:{1} . Valid Values: GET/POST/PUT/DELETE",
-                    (object) Constants.ErrorPrefix, (object) requestType));
+                throw new Exception(
+                    $"{(object) Constants.ErrorPrefix} Invalid Request Type:{(object) requestType} . Valid Values: GET/POST/PUT/DELETE");
             return true;
         }
 

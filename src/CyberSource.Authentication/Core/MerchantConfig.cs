@@ -12,31 +12,12 @@ namespace CyberSource.Authentication.Core
 {
     // TODO: rework this class fully!
 
-    public class MerchantConfig
+    /// <summary>
+    /// Configuration to identify consumer of the API through authentication.
+    /// </summary>
+    public sealed class MerchantConfig
     {
         private string _propertiesSetUsing = string.Empty;
-
-        public MerchantConfig(IReadOnlyDictionary<string, string> merchantConfigDictionary = null)
-        {
-            this.Logger = LogManager.GetCurrentClassLogger();
-            NameValueCollection section = (NameValueCollection) ConfigurationManager.GetSection(nameof(MerchantConfig));
-            if (merchantConfigDictionary != null)
-            {
-                this.SetValuesUsingDictObj(merchantConfigDictionary);
-            }
-            else
-            {
-                if (section == null)
-                    throw new Exception($"{(object) Constants.ErrorPrefix} Merchant Config Missing in App.Config File!");
-                this.SetValuesFromAppConfig(section);
-            }
-
-            LogUtility.InitLogConfig(this.EnableLog, this.LogDirectory, this.LogFileName, this.LogfileMaxSize);
-            this.Logger.Trace("\n");
-            this.Logger.Trace("START> =======================================");
-            this.Logger.Trace("Reading Merchant Configuration from " + this._propertiesSetUsing);
-            this.ValidateProperties();
-        }
 
         public string MerchantId { get; set; }
 
@@ -98,6 +79,28 @@ namespace CyberSource.Authentication.Core
 
         public bool IsJwtTokenAuthType { get; set; }
 
+        public MerchantConfig(IReadOnlyDictionary<string, string> merchantConfigDictionary = null)
+        {
+            this.Logger = LogManager.GetCurrentClassLogger();
+            NameValueCollection section = (NameValueCollection)ConfigurationManager.GetSection(nameof(MerchantConfig));
+            if (merchantConfigDictionary != null)
+            {
+                this.SetValuesUsingDictObj(merchantConfigDictionary);
+            }
+            else
+            {
+                if (section == null)
+                    throw new Exception($"{(object)Constants.ErrorPrefix} Merchant Config Missing in App.Config File!");
+                this.SetValuesFromAppConfig(section);
+            }
+
+            LogUtility.InitLogConfig(this.EnableLog, this.LogDirectory, this.LogFileName, this.LogfileMaxSize);
+            this.Logger.Trace("\n");
+            this.Logger.Trace("START> =======================================");
+            this.Logger.Trace("Reading Merchant Configuration from " + this._propertiesSetUsing);
+            this.ValidateProperties();
+        }
+
         public static string LogAllproperties(MerchantConfig obj)
         {
             string[] strArray = Constants.HideMerchantConfigProps.Split(',');
@@ -132,8 +135,7 @@ namespace CyberSource.Authentication.Core
             this.ProxyPort = merchantConfigSection["proxyPort"];
         }
 
-        private void SetValuesUsingDictObj(
-            IReadOnlyDictionary<string, string> merchantConfigDictionary)
+        private void SetValuesUsingDictObj(IReadOnlyDictionary<string, string> merchantConfigDictionary)
         {
             string index = string.Empty;
             try

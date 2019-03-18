@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>CyberSource.Authentication</id>
-    <version>0.1.1</version>
+    <version>0.1.0</version>
     <title>CyberSource.Authentication</title>
     <authors>CyberSource Corporation</authors>
     <owners>CyberSource</owners>
@@ -15,6 +15,7 @@
         <dependency id="jose-jwt" version="2.4.0" />
         <dependency id="NLog" version="4.5.11" />
         <dependency id="System.Runtime.Caching" version="4.5.0" />
+        <dependency id="System.Configuration.ConfigurationManager" version="4.5.0" />
       </group>
       <group targetFramework="net461">
         <dependency id="jose-jwt" version="2.4.0" />

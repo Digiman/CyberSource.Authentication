@@ -7,7 +7,10 @@ namespace CyberSource.Authentication.Util
 {
     // TODO: fully migrate from NLog to Microsoft Extensions Logging (to have common solution to use logs)
 
-    public class LogUtility
+    /// <summary>
+    /// Utility to work with logs using NLog.
+    /// </summary>
+    public sealed class LogUtility
     {
         private static LogUtility _singletonLogUtility;
 

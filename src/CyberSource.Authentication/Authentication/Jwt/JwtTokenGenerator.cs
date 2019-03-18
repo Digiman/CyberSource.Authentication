@@ -9,21 +9,28 @@ using Jose;
 
 namespace CyberSource.Authentication.Authentication.Jwt
 {
-    public class JwtTokenGenerator : ITokenGenerator
+    /// <summary>
+    /// Generator for JWT tokens for authentication.
+    /// </summary>
+    public sealed class JwtTokenGenerator : ITokenGenerator
     {
         private readonly MerchantConfig _merchantConfig;
         private readonly JwtToken _jwtToken;
 
+        /// <summary>
+        /// Initialize JWT token generation from Merchant Config.
+        /// </summary>
+        /// <param name="merchantConfig">Configuration for consumer (merchant).</param>
         public JwtTokenGenerator(MerchantConfig merchantConfig)
         {
-            this._merchantConfig = merchantConfig;
-            this._jwtToken = new JwtToken(this._merchantConfig);
+            _merchantConfig = merchantConfig;
+            _jwtToken = new JwtToken(_merchantConfig);
         }
 
         public Token GetToken()
         {
-            this._jwtToken.BearerToken = this.SetToken();
-            return (Token) this._jwtToken;
+            _jwtToken.BearerToken = SetToken();
+            return (Token) _jwtToken;
         }
 
         private static string GenerateDigest(string requestJsonData)
@@ -35,11 +42,11 @@ namespace CyberSource.Authentication.Authentication.Jwt
         private string SetToken()
         {
             string str = string.Empty;
-            if (this._merchantConfig.IsGetRequest || this._merchantConfig.IsDeleteRequest)
-                str = this.TokenForCategory1();
-            else if (this._merchantConfig.IsPostRequest || this._merchantConfig.IsPutRequest ||
-                     this._merchantConfig.IsPatchRequest)
-                str = this.TokenForCategory2();
+            if (_merchantConfig.IsGetRequest || _merchantConfig.IsDeleteRequest)
+                str = TokenForCategory1();
+            else if (_merchantConfig.IsPostRequest || _merchantConfig.IsPutRequest ||
+                     _merchantConfig.IsPatchRequest)
+                str = TokenForCategory2();
             return str;
         }
 
@@ -48,14 +55,14 @@ namespace CyberSource.Authentication.Authentication.Jwt
             DateTime dateTime = DateTime.Now;
             dateTime = dateTime.ToUniversalTime();
             string payload = "{ \"iat\":\"" + dateTime.ToString("r") + "\"}";
-            X509Certificate2 certificate = this._jwtToken.Certificate;
+            X509Certificate2 certificate = _jwtToken.Certificate;
             string base64String = Convert.ToBase64String(certificate.RawData);
             RSA rsaPrivateKey = certificate.GetRSAPrivateKey();
             Dictionary<string, object> dictionary1 = new Dictionary<string, object>()
             {
                 {
                     "v-c-merchant-id",
-                    (object) this._jwtToken.KeyAlias
+                    (object) _jwtToken.KeyAlias
                 },
                 {
                     "x5c",
@@ -73,7 +80,7 @@ namespace CyberSource.Authentication.Authentication.Jwt
             string[] strArray = new string[5]
             {
                 "{\n            \"digest\":\"",
-                JwtTokenGenerator.GenerateDigest(this._jwtToken.RequestJsonData),
+                GenerateDigest(_jwtToken.RequestJsonData),
                 "\", \"digestAlgorithm\":\"SHA-256\", \"iat\":\"",
                 null,
                 null
@@ -83,14 +90,14 @@ namespace CyberSource.Authentication.Authentication.Jwt
             strArray[3] = dateTime.ToString("r");
             strArray[4] = "\"}";
             string payload = string.Concat(strArray);
-            X509Certificate2 certificate = this._jwtToken.Certificate;
+            X509Certificate2 certificate = _jwtToken.Certificate;
             string base64String = Convert.ToBase64String(certificate.RawData);
             RSA rsaPrivateKey = certificate.GetRSAPrivateKey();
             Dictionary<string, object> dictionary1 = new Dictionary<string, object>()
             {
                 {
                     "v-c-merchant-id",
-                    (object) this._jwtToken.KeyAlias
+                    (object) _jwtToken.KeyAlias
                 },
                 {
                     "x5c",

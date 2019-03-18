@@ -6,31 +6,40 @@ using CyberSource.Authentication.Interfaces;
 
 namespace CyberSource.Authentication.Authentication.Http
 {
-    public class HttpTokenGenerator : ITokenGenerator
+    /// <summary>
+    /// Logic to generate HTTP token to authenticate.
+    /// </summary>
+    public sealed class HttpTokenGenerator : ITokenGenerator
     {
         private readonly MerchantConfig _merchantConfig;
         private readonly HttpToken _httpToken;
 
+        /// <summary>
+        /// Initialize token from Merchant Config.
+        /// </summary>
+        /// <param name="merchantConfig">Configuration for consumer (merchant).</param>
         public HttpTokenGenerator(MerchantConfig merchantConfig)
         {
-            this._merchantConfig = merchantConfig;
-            this._httpToken = new HttpToken(this._merchantConfig);
+            _merchantConfig = merchantConfig;
+            _httpToken = new HttpToken(_merchantConfig);
         }
 
         public Token GetToken()
         {
-            this._httpToken.SignatureParam = this.SetSignatureParam();
-            return (Token) this._httpToken;
+            _httpToken.SignatureParam = SetSignatureParam();
+            return (Token) _httpToken;
         }
+
+        #region Helpers and main logic.
 
         private string SetSignatureParam()
         {
             string str = string.Empty;
-            if (this._merchantConfig.IsGetRequest || this._merchantConfig.IsDeleteRequest)
-                str = this.SignatureForCategory1();
-            else if (this._merchantConfig.IsPostRequest || this._merchantConfig.IsPutRequest ||
-                     this._merchantConfig.IsPatchRequest)
-                str = this.SignatureForCategory2();
+            if (_merchantConfig.IsGetRequest || _merchantConfig.IsDeleteRequest)
+                str = SignatureForCategory1();
+            else if (_merchantConfig.IsPostRequest || _merchantConfig.IsPutRequest ||
+                     _merchantConfig.IsPatchRequest)
+                str = SignatureForCategory2();
             return str;
         }
 
@@ -41,26 +50,26 @@ namespace CyberSource.Authentication.Authentication.Http
             stringBuilder1.Append('\n');
             stringBuilder1.Append("host");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.HostName);
+            stringBuilder1.Append(_httpToken.HostName);
             stringBuilder1.Append('\n');
             stringBuilder1.Append("date");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.GmtDateTime);
+            stringBuilder1.Append(_httpToken.GmtDateTime);
             stringBuilder1.Append('\n');
             stringBuilder1.Append("(request-target)");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.HttpSignRequestTarget);
+            stringBuilder1.Append(_httpToken.HttpSignRequestTarget);
             stringBuilder1.Append('\n');
             stringBuilder1.Append("v-c-merchant-id");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.MerchantId);
+            stringBuilder1.Append(_httpToken.MerchantId);
             stringBuilder1.Remove(0, 1);
             string base64String =
                 Convert.ToBase64String(
-                    new HMACSHA256(Convert.FromBase64String(this._httpToken.MerchantSecretKey)).ComputeHash(
+                    new HMACSHA256(Convert.FromBase64String(_httpToken.MerchantSecretKey)).ComputeHash(
                         Encoding.UTF8.GetBytes(stringBuilder1.ToString())));
-            stringBuilder2.Append("keyid=\"" + this._httpToken.MerchantKeyId + "\"");
-            stringBuilder2.Append(", algorithm=\"" + this._httpToken.SignatureAlgorithm + "\"");
+            stringBuilder2.Append("keyid=\"" + _httpToken.MerchantKeyId + "\"");
+            stringBuilder2.Append(", algorithm=\"" + _httpToken.SignatureAlgorithm + "\"");
             stringBuilder2.Append(", headers=\"host date (request-target) v-c-merchant-id\"");
             stringBuilder2.Append(", signature=\"" + base64String + "\"");
             return stringBuilder2.ToString();
@@ -70,34 +79,34 @@ namespace CyberSource.Authentication.Authentication.Http
         {
             StringBuilder stringBuilder1 = new StringBuilder();
             StringBuilder stringBuilder2 = new StringBuilder();
-            this._httpToken.Digest = this.GenerateDigest();
+            _httpToken.Digest = GenerateDigest();
             stringBuilder1.Append('\n');
             stringBuilder1.Append("host");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.HostName);
+            stringBuilder1.Append(_httpToken.HostName);
             stringBuilder1.Append('\n');
             stringBuilder1.Append("date");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.GmtDateTime);
+            stringBuilder1.Append(_httpToken.GmtDateTime);
             stringBuilder1.Append('\n');
             stringBuilder1.Append("(request-target)");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.HttpSignRequestTarget);
+            stringBuilder1.Append(_httpToken.HttpSignRequestTarget);
             stringBuilder1.Append('\n');
             stringBuilder1.Append("digest");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.Digest);
+            stringBuilder1.Append(_httpToken.Digest);
             stringBuilder1.Append('\n');
             stringBuilder1.Append("v-c-merchant-id");
             stringBuilder1.Append(": ");
-            stringBuilder1.Append(this._httpToken.MerchantId);
+            stringBuilder1.Append(_httpToken.MerchantId);
             stringBuilder1.Remove(0, 1);
             string base64String =
                 Convert.ToBase64String(
-                    new HMACSHA256(Convert.FromBase64String(this._httpToken.MerchantSecretKey)).ComputeHash(
+                    new HMACSHA256(Convert.FromBase64String(_httpToken.MerchantSecretKey)).ComputeHash(
                         Encoding.UTF8.GetBytes(stringBuilder1.ToString())));
-            stringBuilder2.Append("keyid=\"" + this._httpToken.MerchantKeyId + "\"");
-            stringBuilder2.Append(", algorithm=\"" + this._httpToken.SignatureAlgorithm + "\"");
+            stringBuilder2.Append("keyid=\"" + _httpToken.MerchantKeyId + "\"");
+            stringBuilder2.Append(", algorithm=\"" + _httpToken.SignatureAlgorithm + "\"");
             stringBuilder2.Append(", headers=\"host date (request-target) digest v-c-merchant-id\"");
             stringBuilder2.Append(", signature=\"" + base64String + "\"");
             return stringBuilder2.ToString();
@@ -108,7 +117,9 @@ namespace CyberSource.Authentication.Authentication.Http
             using (SHA256 shA256 = SHA256.Create())
                 return "SHA-256=" +
                        Convert.ToBase64String(
-                           shA256.ComputeHash(Encoding.UTF8.GetBytes(this._httpToken.RequestJsonData)));
+                           shA256.ComputeHash(Encoding.UTF8.GetBytes(_httpToken.RequestJsonData)));
         }
+
+        #endregion
     }
 }

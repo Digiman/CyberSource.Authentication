@@ -1,7 +1,8 @@
 ﻿namespace CyberSource.Authentication.Core
-{
-    // TODO: identify why we need this class
-    
+{    
+    /// <summary>
+    /// Base class for Tokens.
+    /// </summary>
     public abstract class Token
     {
     }

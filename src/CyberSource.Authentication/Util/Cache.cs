@@ -9,6 +9,9 @@ namespace CyberSource.Authentication.Util
 {
     // TODO: work better with cache in .NET core.
 
+    /// <summary>
+    /// Implementation in memory cache to store certificates.
+    /// </summary>
     public static class Cache
     {
         public static X509Certificate2 FetchCachedCertificate(string p12FilePath, string keyPassword)

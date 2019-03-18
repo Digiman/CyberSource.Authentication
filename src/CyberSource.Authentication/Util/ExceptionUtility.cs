@@ -2,6 +2,8 @@
 
 namespace CyberSource.Authentication.Util
 {
+    // TODO: remove here dependency from NLog and sue more common logger if needed
+
     public static class ExceptionUtility
     {
         private static bool _exceptionIsCaughtAlready;
