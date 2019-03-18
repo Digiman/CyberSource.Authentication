@@ -1,11 +1,8 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: AuthenticationSdk.util.Constants
-// Assembly: AuthenticationSdk, Version=0.0.0.3, Culture=neutral, PublicKeyToken=null
-// MVID: 20997894-17CE-414B-B502-B8B103C3242C
-// Assembly location: D:\Sources\Decompile\AuthenticationSdk.dll
-
-namespace CyberSource.Authentication.Util
+﻿namespace CyberSource.Authentication.Util
 {
+    /// <summary>
+    /// Static values - constants inside the library.
+    /// </summary>
     public static class Constants
     {
         public static readonly string GetUpperCase = "GET";
@@ -14,8 +11,7 @@ namespace CyberSource.Authentication.Util
         public static readonly string SignatureAlgorithm = "HmacSHA256";
         public static readonly string HostName = "apitest.cybersource.com";
 
-        public static readonly string HideMerchantConfigProps =
-            "MerchantId,MerchantSecretKey,MerchantKeyId,KeyAlias,KeyPassword,RequestJsonData";
+        public static readonly string HideMerchantConfigProps = "MerchantId,MerchantSecretKey,MerchantKeyId,KeyAlias,KeyPassword,RequestJsonData";
 
         public static readonly string CybsSandboxHostName = "apitest.cybersource.com";
         public static readonly string CybsProdHostName = "api.cybersource.com";

@@ -1,10 +1,7 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: AuthenticationSdk.util.LogUtility
-// Assembly: AuthenticationSdk, Version=0.0.0.3, Culture=neutral, PublicKeyToken=null
-// MVID: 20997894-17CE-414B-B502-B8B103C3242C
-// Assembly location: D:\Sources\Decompile\AuthenticationSdk.dll
-
-using System;
+﻿using System;
+using NLog;
+using NLog.Layouts;
+using NLog.Targets;
 
 namespace CyberSource.Authentication.Util
 {

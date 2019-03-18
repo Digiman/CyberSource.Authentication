@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: AuthenticationSdk.core.Authorize
-// Assembly: AuthenticationSdk, Version=0.0.0.3, Culture=neutral, PublicKeyToken=null
-// MVID: 20997894-17CE-414B-B502-B8B103C3242C
-// Assembly location: D:\Sources\Decompile\AuthenticationSdk.dll
-
-using System;
+﻿using System;
 using CyberSource.Authentication.Authentication.Http;
 using CyberSource.Authentication.Authentication.Jwt;
 using CyberSource.Authentication.Util;
@@ -22,8 +16,8 @@ namespace CyberSource.Authentication.Core
         public Authorize(MerchantConfig merchantConfig)
         {
             this._merchantConfig = merchantConfig;
-            Enumerations.ValidateRequestType(this._merchantConfig.RequestType);
-            Enumerations.SetRequestType(this._merchantConfig);
+            EnumHelper.ValidateRequestType(this._merchantConfig.RequestType);
+            EnumHelper.SetRequestType(this._merchantConfig);
         }
 
         public HttpToken GetSignature()
@@ -33,20 +27,20 @@ namespace CyberSource.Authentication.Core
                 if (this._merchantConfig == null)
                     return (HttpToken) null;
                 this.LogMerchantDetails();
-                Enumerations.ValidateRequestType(this._merchantConfig.RequestType);
+                EnumHelper.ValidateRequestType(this._merchantConfig.RequestType);
                 HttpToken token = (HttpToken) new HttpTokenGenerator(this._merchantConfig).GetToken();
                 if (this._merchantConfig.IsGetRequest || this._merchantConfig.IsDeleteRequest)
-                    this._logger.Trace<string, string>("{0} {1}", (M0) "Content-Type:", (M1) "application/json");
+                    this._logger.Trace<string, string>("{0} {1}", "Content-Type:", "application/json");
                 if (this._merchantConfig.IsPostRequest || this._merchantConfig.IsPutRequest ||
                     this._merchantConfig.IsPatchRequest)
-                    this._logger.Trace<string, string>("{0} {1}", (M0) "Content-Type:", (M1) "application/hal+json");
-                this._logger.Trace<string, string>("{0} {1}", (M0) "v-c-merchant-id:", (M1) token.MerchantId);
-                this._logger.Trace<string, string>("{0} {1}", (M0) "Date:", (M1) token.GmtDateTime);
-                this._logger.Trace<string, string>("{0} {1}", (M0) "Host:", (M1) token.HostName);
+                    this._logger.Trace<string, string>("{0} {1}", "Content-Type:", "application/hal+json");
+                this._logger.Trace<string, string>("{0} {1}", "v-c-merchant-id:", token.MerchantId);
+                this._logger.Trace<string, string>("{0} {1}", "Date:", token.GmtDateTime);
+                this._logger.Trace<string, string>("{0} {1}", "Host:", token.HostName);
                 if (this._merchantConfig.IsPostRequest || this._merchantConfig.IsPutRequest ||
                     this._merchantConfig.IsPatchRequest)
-                    this._logger.Trace<string, string>("{0} {1}", (M0) "digest:", (M1) token.Digest);
-                this._logger.Trace<string, string>("{0} {1}", (M0) "signature:", (M1) token.SignatureParam);
+                    this._logger.Trace<string, string>("{0} {1}", "digest:", token.Digest);
+                this._logger.Trace<string, string>("{0} {1}", "signature:", token.SignatureParam);
                 return token;
             }
             catch (Exception ex)
@@ -63,14 +57,14 @@ namespace CyberSource.Authentication.Core
                 if (this._merchantConfig == null)
                     return (JwtToken) null;
                 this.LogMerchantDetails();
-                Enumerations.ValidateRequestType(this._merchantConfig.RequestType);
+                EnumHelper.ValidateRequestType(this._merchantConfig.RequestType);
                 JwtToken token = (JwtToken) new JwtTokenGenerator(this._merchantConfig).GetToken();
                 if (this._merchantConfig.IsGetRequest || this._merchantConfig.IsDeleteRequest)
-                    this._logger.Trace<string, string>("{0} {1}", (M0) "Content-Type:", (M1) "application/json");
+                    this._logger.Trace<string, string>("{0} {1}", "Content-Type:", "application/json");
                 else if (this._merchantConfig.IsPostRequest || this._merchantConfig.IsPutRequest ||
                          this._merchantConfig.IsPatchRequest)
-                    this._logger.Trace<string, string>("{0} {1}", (M0) "Content-Type:", (M1) "application/hal+json");
-                this._logger.Trace<string, string>("{0} {1}", (M0) "Authorization:", (M1) token.BearerToken);
+                    this._logger.Trace<string, string>("{0} {1}", "Content-Type:", "application/hal+json");
+                this._logger.Trace<string, string>("{0} {1}", "Authorization:", token.BearerToken);
                 return token;
             }
             catch (Exception ex)

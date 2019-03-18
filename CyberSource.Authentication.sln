@@ -1,7 +1,10 @@
-
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationSdk", "src\CyberSource.Authentication\CyberSource.Authentication.csproj", "{5867E282-4788-4432-BEF0-0F12283894F0}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CyberSource.Authentication", "src\CyberSource.Authentication\CyberSource.Authentication.csproj", "{5867E282-4788-4432-BEF0-0F12283894F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FADABB31-AD70-41C4-9138-48688B7D7B26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,5 +19,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5867E282-4788-4432-BEF0-0F12283894F0} = {FADABB31-AD70-41C4-9138-48688B7D7B26}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7D2D1A76-3943-4FD9-BEA3-134CE7C5C79F}
 	EndGlobalSection
 EndGlobal

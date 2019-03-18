@@ -1,26 +1,22 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: AuthenticationSdk.core.MerchantConfig
-// Assembly: AuthenticationSdk, Version=0.0.0.3, Culture=neutral, PublicKeyToken=null
-// MVID: 20997894-17CE-414B-B502-B8B103C3242C
-// Assembly location: D:\Sources\Decompile\AuthenticationSdk.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using CyberSource.Authentication.Enums;
 using CyberSource.Authentication.Util;
 using NLog;
 
 namespace CyberSource.Authentication.Core
 {
+    // TODO: rework this class fully!
+
     public class MerchantConfig
     {
         private string _propertiesSetUsing = string.Empty;
 
-        public MerchantConfig(
-            IReadOnlyDictionary<string, string> merchantConfigDictionary = null)
+        public MerchantConfig(IReadOnlyDictionary<string, string> merchantConfigDictionary = null)
         {
             this.Logger = LogManager.GetCurrentClassLogger();
             NameValueCollection section = (NameValueCollection) ConfigurationManager.GetSection(nameof(MerchantConfig));
@@ -31,8 +27,7 @@ namespace CyberSource.Authentication.Core
             else
             {
                 if (section == null)
-                    throw new Exception(string.Format("{0} Merchant Config Missing in App.Config File!",
-                        (object) Constants.ErrorPrefix));
+                    throw new Exception($"{(object) Constants.ErrorPrefix} Merchant Config Missing in App.Config File!");
                 this.SetValuesFromAppConfig(section);
             }
 
@@ -152,9 +147,9 @@ namespace CyberSource.Authentication.Core
                 this.RunEnvironment = merchantConfigDictionary[index];
                 index = "authenticationType";
                 this.AuthenticationType = merchantConfigDictionary[index];
-                Enumerations.AuthenticationType result;
-                Enum.TryParse<Enumerations.AuthenticationType>(this.AuthenticationType.ToUpper(), out result);
-                if (object.Equals((object) result, (object) Enumerations.AuthenticationType.HTTP_SIGNATURE))
+                AuthenticationType result;
+                Enum.TryParse<AuthenticationType>(this.AuthenticationType.ToUpper(), out result);
+                if (object.Equals((object) result, (object) Enums.AuthenticationType.HTTP_SIGNATURE))
                 {
                     index = "merchantsecretKey";
                     this.MerchantSecretKey = merchantConfigDictionary[index];
@@ -162,7 +157,7 @@ namespace CyberSource.Authentication.Core
                     this.MerchantKeyId = merchantConfigDictionary[index];
                 }
 
-                if (object.Equals((object) result, (object) Enumerations.AuthenticationType.JWT))
+                if (object.Equals((object) result, (object) Enums.AuthenticationType.JWT))
                 {
                     if (merchantConfigDictionary.ContainsKey("keyAlias"))
                         this.KeyAlias = merchantConfigDictionary["keyAlias"];
@@ -192,20 +187,18 @@ namespace CyberSource.Authentication.Core
             }
             catch (KeyNotFoundException ex)
             {
-                throw new Exception(string.Format(
-                    "{0} Mandatory Key ({1}) Missing in the Configuration Dictionary Object Passed to the instance of MerchantConfig",
-                    (object) Constants.ErrorPrefix, (object) index));
+                throw new Exception(
+                    $"{(object) Constants.ErrorPrefix} Mandatory Key ({(object) index}) Missing in the Configuration Dictionary Object Passed to the instance of MerchantConfig");
             }
         }
 
         private void ValidateProperties()
         {
             if (string.IsNullOrEmpty(this.MerchantId))
-                throw new Exception(string.Format("{0} Merchant Config field - MerchantID is Mandatory",
-                    (object) Constants.ErrorPrefix));
-            Enumerations.ValidateAuthenticationType(this.AuthenticationType);
+                throw new Exception($"{(object) Constants.ErrorPrefix} Merchant Config field - MerchantID is Mandatory");
+            EnumHelper.ValidateAuthenticationType(this.AuthenticationType);
             string authenticationType1 = this.AuthenticationType;
-            Enumerations.AuthenticationType authenticationType2 = Enumerations.AuthenticationType.HTTP_SIGNATURE;
+            AuthenticationType authenticationType2 = Enums.AuthenticationType.HTTP_SIGNATURE;
             string b1 = authenticationType2.ToString();
             if (string.Equals(authenticationType1, b1, StringComparison.OrdinalIgnoreCase))
             {
@@ -214,7 +207,7 @@ namespace CyberSource.Authentication.Core
             else
             {
                 string authenticationType3 = this.AuthenticationType;
-                authenticationType2 = Enumerations.AuthenticationType.JWT;
+                authenticationType2 = Enums.AuthenticationType.JWT;
                 string b2 = authenticationType2.ToString();
                 if (string.Equals(authenticationType3, b2, StringComparison.OrdinalIgnoreCase))
                     this.IsJwtTokenAuthType = true;
@@ -223,8 +216,8 @@ namespace CyberSource.Authentication.Core
             if (string.IsNullOrEmpty(this.TimeOut))
                 this.TimeOut = string.Empty;
             if (string.IsNullOrEmpty(this.RunEnvironment))
-                throw new Exception(string.Format("{0} Merchant Config field - RunEnvironment is Mandatory",
-                    (object) Constants.ErrorPrefix));
+                throw new Exception(
+                    $"{(object) Constants.ErrorPrefix} Merchant Config field - RunEnvironment is Mandatory");
             this.HostName = !this.RunEnvironment.ToUpper().Equals(Constants.CybsSandboxRunEnv.ToUpper())
                 ? (!this.RunEnvironment.ToUpper().Equals(Constants.CybsProdRunEnv.ToUpper())
                     ? this.RunEnvironment.ToLower()
@@ -233,11 +226,11 @@ namespace CyberSource.Authentication.Core
             if (this.IsHttpSignAuthType)
             {
                 if (string.IsNullOrEmpty(this.MerchantKeyId))
-                    throw new Exception(string.Format("{0} Merchant Config field - MerchantKeyId is Mandatory",
-                        (object) Constants.ErrorPrefix));
+                    throw new Exception(
+                        $"{(object) Constants.ErrorPrefix} Merchant Config field - MerchantKeyId is Mandatory");
                 if (string.IsNullOrEmpty(this.MerchantSecretKey))
-                    throw new Exception(string.Format("{0} Merchant Config field - MerchantSecretKey is Mandatory",
-                        (object) Constants.ErrorPrefix));
+                    throw new Exception(
+                        $"{(object) Constants.ErrorPrefix} Merchant Config field - MerchantSecretKey is Mandatory");
             }
             else
             {
@@ -246,37 +239,36 @@ namespace CyberSource.Authentication.Core
                 if (string.IsNullOrEmpty(this.KeyAlias))
                 {
                     this.KeyAlias = this.MerchantId;
-                    this.Logger.Warn(string.Format("{0} KeyAlias not provided. Assigning the value of: [MerchantID]",
-                        (object) Constants.WarningPrefix));
+                    this.Logger.Warn(
+                        $"{(object) Constants.WarningPrefix} KeyAlias not provided. Assigning the value of: [MerchantID]");
                 }
 
                 if (!string.Equals(this.KeyAlias, this.MerchantId))
                 {
                     this.KeyAlias = this.MerchantId;
-                    this.Logger.Warn(string.Format(
-                        "{0} Incorrect value of KeyAlias provided. Assigning the value of: [MerchantID]",
-                        (object) Constants.WarningPrefix));
+                    this.Logger.Warn(
+                        $"{(object) Constants.WarningPrefix} Incorrect value of KeyAlias provided. Assigning the value of: [MerchantID]");
                 }
 
                 if (string.IsNullOrEmpty(this.KeyPass))
                 {
                     this.KeyPass = this.MerchantId;
-                    this.Logger.Warn(string.Format("{0} KeyPassword not provided. Assigning the value of: [MerchantID]",
-                        (object) Constants.WarningPrefix));
+                    this.Logger.Warn(
+                        $"{(object) Constants.WarningPrefix} KeyPassword not provided. Assigning the value of: [MerchantID]");
                 }
 
                 if (string.IsNullOrEmpty(this.KeyDirectory))
                 {
                     this.KeyDirectory = Constants.P12FileDirectory;
-                    this.Logger.Warn(string.Format("{0} KeysDirectory not provided. Using Default Path: {1}",
-                        (object) Constants.WarningPrefix, (object) this.KeyDirectory));
+                    this.Logger.Warn(
+                        $"{(object) Constants.WarningPrefix} KeysDirectory not provided. Using Default Path: {(object) this.KeyDirectory}");
                 }
 
                 if (string.IsNullOrEmpty(this.KeyfileName))
                 {
                     this.KeyfileName = this.MerchantId;
-                    this.Logger.Warn(string.Format("{0} KeyfileName not provided. Assigning the value of: [MerchantId]",
-                        (object) Constants.WarningPrefix));
+                    this.Logger.Warn(
+                        $"{(object) Constants.WarningPrefix} KeyfileName not provided. Assigning the value of: [MerchantId]");
                 }
 
                 this.P12Keyfilepath = this.KeyDirectory + "\\" + this.KeyfileName + ".p12";

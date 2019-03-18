@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: AuthenticationSdk.util.Cache
-// Assembly: AuthenticationSdk, Version=0.0.0.3, Culture=neutral, PublicKeyToken=null
-// MVID: 20997894-17CE-414B-B502-B8B103C3242C
-// Assembly location: D:\Sources\Decompile\AuthenticationSdk.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Caching;
@@ -15,9 +9,7 @@ namespace CyberSource.Authentication.Util
 {
     public static class Cache
     {
-        public static X509Certificate2 FetchCachedCertificate(
-            string p12FilePath,
-            string keyPassword)
+        public static X509Certificate2 FetchCachedCertificate(string p12FilePath, string keyPassword)
         {
             try
             {
@@ -37,8 +29,7 @@ namespace CyberSource.Authentication.Util
             catch (CryptographicException ex)
             {
                 if (ex.Message.Equals("The specified network password is not correct.\r\n"))
-                    throw new Exception(string.Format("{0} KeyPassword provided:{1} is incorrect",
-                        (object) Constants.ErrorPrefix, (object) keyPassword));
+                    throw new Exception($"{(object) Constants.ErrorPrefix} KeyPassword provided:{(object) keyPassword} is incorrect");
                 return (X509Certificate2) null;
             }
         }
