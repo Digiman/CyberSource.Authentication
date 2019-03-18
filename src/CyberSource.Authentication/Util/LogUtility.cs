@@ -19,15 +19,15 @@ namespace CyberSource.Authentication.Util
                 LogManager.DisableLogging();
             try
             {
-                FileTarget targetByName = LogManager.get_Configuration().FindTargetByName("file") as FileTarget;
+                FileTarget targetByName = LogManager.Configuration.FindTargetByName("file") as FileTarget;
                 if (targetByName == null)
                     throw new Exception(string.Format("{0} No Target with the name 'file' found in NLog.config",
                         (object) Constants.ErrorPrefix));
                 if (!string.IsNullOrEmpty(logDirectory))
-                    targetByName.set_FileName(Layout.op_Implicit(logDirectory + "\\" + logFileName));
+                    targetByName.FileName = Layout.FromString(logDirectory + "\\" + logFileName);
                 if (string.IsNullOrEmpty(logFileMaxSize))
                     return;
-                targetByName.set_ArchiveAboveSize(long.Parse(logFileMaxSize));
+                targetByName.ArchiveAboveSize = long.Parse(logFileMaxSize);
             }
             catch (NullReferenceException ex)
             {
