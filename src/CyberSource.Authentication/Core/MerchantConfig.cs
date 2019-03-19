@@ -1,31 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.Linq;
-using System.Reflection;
 using CyberSource.Authentication.Enums;
+using CyberSource.Authentication.Exceptions;
 using CyberSource.Authentication.Util;
-using NLog;
 
 namespace CyberSource.Authentication.Core
 {
     // TODO: rework this class fully!
+    // TODO: remove logic to read data from the configuration here! maybe move to another class like loader
 
     /// <summary>
     /// Configuration to identify consumer of the API through authentication.
     /// </summary>
     public sealed class MerchantConfig
     {
-        private string _propertiesSetUsing = string.Empty;
-
         public string MerchantId { get; set; }
 
         public string MerchantSecretKey { get; set; }
 
         public string MerchantKeyId { get; set; }
 
-        public string AuthenticationType { get; set; }
+        public AuthenticationType AuthenticationType { get; set; }
 
         public string KeyDirectory { get; set; }
 
@@ -37,21 +32,11 @@ namespace CyberSource.Authentication.Core
 
         public string KeyPass { get; set; }
 
-        public string EnableLog { get; set; } = "TRUE";
-
-        public string LogDirectory { get; set; } = "../../logs";
-
-        public string LogfileMaxSize { get; set; } = "10485760";
-
-        public string LogFileName { get; set; } = "cybs.log";
-
         public string TimeOut { get; set; }
 
         public string ProxyAddress { get; set; }
 
         public string ProxyPort { get; set; }
-
-        public Logger Logger { get; set; }
 
         public string HostName { get; set; }
 
@@ -63,7 +48,7 @@ namespace CyberSource.Authentication.Core
 
         public string RequestJsonData { get; set; }
 
-        public string RequestType { get; set; }
+        public RequestType RequestType { get; set; }
 
         public bool IsGetRequest { get; set; }
 
@@ -79,201 +64,141 @@ namespace CyberSource.Authentication.Core
 
         public bool IsJwtTokenAuthType { get; set; }
 
-        public MerchantConfig(IReadOnlyDictionary<string, string> merchantConfigDictionary = null)
+        /// <summary>
+        /// Initialize configuration from the dictionary.
+        /// </summary>
+        /// <param name="merchantConfigDictionary">Dictionary with values.</param>
+        public MerchantConfig(Dictionary<string, string> merchantConfigDictionary = null)
         {
-            this.Logger = LogManager.GetCurrentClassLogger();
-            NameValueCollection section = (NameValueCollection)ConfigurationManager.GetSection(nameof(MerchantConfig));
             if (merchantConfigDictionary != null)
             {
-                this.SetValuesUsingDictObj(merchantConfigDictionary);
-            }
-            else
-            {
-                if (section == null)
-                    throw new Exception($"{(object)Constants.ErrorPrefix} Merchant Config Missing in App.Config File!");
-                this.SetValuesFromAppConfig(section);
+                SetValuesUsingDictionaryObject(merchantConfigDictionary);
             }
 
-            LogUtility.InitLogConfig(this.EnableLog, this.LogDirectory, this.LogFileName, this.LogfileMaxSize);
-            this.Logger.Trace("\n");
-            this.Logger.Trace("START> =======================================");
-            this.Logger.Trace("Reading Merchant Configuration from " + this._propertiesSetUsing);
-            this.ValidateProperties();
+            ValidateProperties();
         }
 
-        public static string LogAllproperties(MerchantConfig obj)
-        {
-            string[] strArray = Constants.HideMerchantConfigProps.Split(',');
-            string str = " ";
-            foreach (PropertyInfo property in typeof(MerchantConfig).GetProperties())
-            {
-                if (!((IEnumerable<string>) strArray).Any<string>(new Func<string, bool>(property.Name.Contains)))
-                    str = str + property.Name + " " + property.GetValue((object) obj) + ", ";
-            }
-
-            return str;
-        }
-
-        private void SetValuesFromAppConfig(NameValueCollection merchantConfigSection)
-        {
-            this._propertiesSetUsing = "App.Config File";
-            this.MerchantId = merchantConfigSection["merchantID"];
-            this.MerchantSecretKey = merchantConfigSection["merchantsecretKey"];
-            this.MerchantKeyId = merchantConfigSection["merchantKeyId"];
-            this.AuthenticationType = merchantConfigSection["authenticationType"];
-            this.KeyDirectory = merchantConfigSection["keysDirectory"];
-            this.KeyfileName = merchantConfigSection["keyFilename"];
-            this.RunEnvironment = merchantConfigSection["runEnvironment"];
-            this.KeyAlias = merchantConfigSection["keyAlias"];
-            this.KeyPass = merchantConfigSection["keyPass"];
-            this.EnableLog = merchantConfigSection["enableLog"];
-            this.LogDirectory = merchantConfigSection["logDirectory"];
-            this.LogfileMaxSize = merchantConfigSection["logFileMaxSize"];
-            this.LogFileName = merchantConfigSection["logFileName"];
-            this.TimeOut = merchantConfigSection["timeout"];
-            this.ProxyAddress = merchantConfigSection["proxyAddress"];
-            this.ProxyPort = merchantConfigSection["proxyPort"];
-        }
-
-        private void SetValuesUsingDictObj(IReadOnlyDictionary<string, string> merchantConfigDictionary)
+        /// <summary>
+        /// Set values to the instance of the object from values in the dictionary.
+        /// </summary>
+        /// <param name="merchantConfigDictionary">Configuration dictionary with values.</param>
+        private void SetValuesUsingDictionaryObject(Dictionary<string, string> merchantConfigDictionary)
         {
             string index = string.Empty;
             try
             {
-                if (merchantConfigDictionary == null)
-                    return;
-                this._propertiesSetUsing = "Dictionary Object";
+                if (merchantConfigDictionary == null) return;
                 index = "merchantID";
-                this.MerchantId = merchantConfigDictionary[index];
+                MerchantId = merchantConfigDictionary[index];
                 index = "runEnvironment";
-                this.RunEnvironment = merchantConfigDictionary[index];
+                RunEnvironment = merchantConfigDictionary[index];
                 index = "authenticationType";
-                this.AuthenticationType = merchantConfigDictionary[index];
-                AuthenticationType result;
-                Enum.TryParse<AuthenticationType>(this.AuthenticationType.ToUpper(), out result);
-                if (object.Equals((object) result, (object) Enums.AuthenticationType.HTTP_SIGNATURE))
+                AuthenticationType = (AuthenticationType)Enum.Parse(typeof(AuthenticationType), merchantConfigDictionary[index]);
+                if (Equals(AuthenticationType, Enums.AuthenticationType.HTTP_SIGNATURE))
                 {
                     index = "merchantsecretKey";
-                    this.MerchantSecretKey = merchantConfigDictionary[index];
+                    MerchantSecretKey = merchantConfigDictionary[index];
                     index = "merchantKeyId";
-                    this.MerchantKeyId = merchantConfigDictionary[index];
+                    MerchantKeyId = merchantConfigDictionary[index];
                 }
 
-                if (object.Equals((object) result, (object) Enums.AuthenticationType.JWT))
+                if (Equals(AuthenticationType, Enums.AuthenticationType.JWT))
                 {
                     if (merchantConfigDictionary.ContainsKey("keyAlias"))
-                        this.KeyAlias = merchantConfigDictionary["keyAlias"];
+                        KeyAlias = merchantConfigDictionary["keyAlias"];
                     if (merchantConfigDictionary.ContainsKey("keyFilename"))
-                        this.KeyfileName = merchantConfigDictionary["keyFilename"];
+                        KeyfileName = merchantConfigDictionary["keyFilename"];
                     if (merchantConfigDictionary.ContainsKey("keyPass"))
-                        this.KeyPass = merchantConfigDictionary["keyPass"];
+                        KeyPass = merchantConfigDictionary["keyPass"];
                     if (merchantConfigDictionary.ContainsKey("keysDirectory"))
-                        this.KeyDirectory = merchantConfigDictionary["keysDirectory"];
+                        KeyDirectory = merchantConfigDictionary["keysDirectory"];
                 }
 
-                if (merchantConfigDictionary.ContainsKey("enableLog"))
-                    this.EnableLog = merchantConfigDictionary["enableLog"];
-                if (merchantConfigDictionary.ContainsKey("logDirectory"))
-                    this.LogDirectory = merchantConfigDictionary["logDirectory"];
-                if (merchantConfigDictionary.ContainsKey("logFileMaxSize"))
-                    this.LogfileMaxSize = merchantConfigDictionary["logFileMaxSize"];
-                if (merchantConfigDictionary.ContainsKey("logFileName"))
-                    this.LogFileName = merchantConfigDictionary["logFileName"];
                 if (merchantConfigDictionary.ContainsKey("timeout"))
-                    this.TimeOut = merchantConfigDictionary["timeout"];
+                    TimeOut = merchantConfigDictionary["timeout"];
                 if (merchantConfigDictionary.ContainsKey("proxyAddress"))
-                    this.ProxyAddress = merchantConfigDictionary["proxyAddress"];
+                    ProxyAddress = merchantConfigDictionary["proxyAddress"];
                 if (!merchantConfigDictionary.ContainsKey("proxyPort"))
                     return;
-                this.ProxyPort = merchantConfigDictionary["proxyPort"];
+                ProxyPort = merchantConfigDictionary["proxyPort"];
             }
             catch (KeyNotFoundException ex)
             {
-                throw new Exception(
-                    $"{(object) Constants.ErrorPrefix} Mandatory Key ({(object) index}) Missing in the Configuration Dictionary Object Passed to the instance of MerchantConfig");
+                throw new MerchantConfigException($"{Constants.ErrorPrefix} Mandatory Key ({index}) Missing in the Configuration Dictionary Object Passed to the instance of MerchantConfig");
             }
         }
 
+        /// <summary>
+        /// Validate properties in the object.
+        /// </summary>
         private void ValidateProperties()
         {
-            if (string.IsNullOrEmpty(this.MerchantId))
-                throw new Exception($"{(object) Constants.ErrorPrefix} Merchant Config field - MerchantID is Mandatory");
-            EnumHelper.ValidateAuthenticationType(this.AuthenticationType);
-            string authenticationType1 = this.AuthenticationType;
-            AuthenticationType authenticationType2 = Enums.AuthenticationType.HTTP_SIGNATURE;
-            string b1 = authenticationType2.ToString();
-            if (string.Equals(authenticationType1, b1, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(MerchantId))
+                throw new MerchantConfigException($"{(object) Constants.ErrorPrefix} Merchant Config field - MerchantID is Mandatory");
+
+            if (AuthenticationType == AuthenticationType.HTTP_SIGNATURE)
             {
-                this.IsHttpSignAuthType = true;
+                IsHttpSignAuthType = true;
             }
-            else
+            else if (AuthenticationType == AuthenticationType.JWT)
             {
-                string authenticationType3 = this.AuthenticationType;
-                authenticationType2 = Enums.AuthenticationType.JWT;
-                string b2 = authenticationType2.ToString();
-                if (string.Equals(authenticationType3, b2, StringComparison.OrdinalIgnoreCase))
-                    this.IsJwtTokenAuthType = true;
+                IsJwtTokenAuthType = true;
             }
 
-            if (string.IsNullOrEmpty(this.TimeOut))
-                this.TimeOut = string.Empty;
-            if (string.IsNullOrEmpty(this.RunEnvironment))
-                throw new Exception(
-                    $"{(object) Constants.ErrorPrefix} Merchant Config field - RunEnvironment is Mandatory");
-            this.HostName = !this.RunEnvironment.ToUpper().Equals(Constants.CybsSandboxRunEnv.ToUpper())
-                ? (!this.RunEnvironment.ToUpper().Equals(Constants.CybsProdRunEnv.ToUpper())
-                    ? this.RunEnvironment.ToLower()
+            if (string.IsNullOrEmpty(TimeOut))
+                TimeOut = string.Empty;
+
+            if (string.IsNullOrEmpty(RunEnvironment))
+                throw new MerchantConfigException($"{Constants.ErrorPrefix} Merchant Config field - RunEnvironment is Mandatory");
+
+            HostName = !RunEnvironment.ToUpper().Equals(Constants.CybsSandboxRunEnv.ToUpper())
+                ? (!RunEnvironment.ToUpper().Equals(Constants.CybsProdRunEnv.ToUpper())
+                    ? RunEnvironment.ToLower()
                     : Constants.CybsProdHostName)
                 : Constants.CybsSandboxHostName;
-            if (this.IsHttpSignAuthType)
+
+            if (IsHttpSignAuthType)
             {
-                if (string.IsNullOrEmpty(this.MerchantKeyId))
-                    throw new Exception(
-                        $"{(object) Constants.ErrorPrefix} Merchant Config field - MerchantKeyId is Mandatory");
-                if (string.IsNullOrEmpty(this.MerchantSecretKey))
-                    throw new Exception(
-                        $"{(object) Constants.ErrorPrefix} Merchant Config field - MerchantSecretKey is Mandatory");
+                if (string.IsNullOrEmpty(MerchantKeyId))
+                    throw new MerchantConfigException($"{Constants.ErrorPrefix} Merchant Config field - MerchantKeyId is Mandatory");
+                if (string.IsNullOrEmpty(MerchantSecretKey))
+                    throw new MerchantConfigException($"{Constants.ErrorPrefix} Merchant Config field - MerchantSecretKey is Mandatory");
             }
             else
             {
-                if (!this.IsJwtTokenAuthType)
+                if (!IsJwtTokenAuthType)
                     return;
-                if (string.IsNullOrEmpty(this.KeyAlias))
+                if (string.IsNullOrEmpty(KeyAlias))
                 {
-                    this.KeyAlias = this.MerchantId;
-                    this.Logger.Warn(
-                        $"{(object) Constants.WarningPrefix} KeyAlias not provided. Assigning the value of: [MerchantID]");
+                    KeyAlias = MerchantId;
+                    //Logger.Warn($"{Constants.WarningPrefix} KeyAlias not provided. Assigning the value of: [MerchantID]");
                 }
 
-                if (!string.Equals(this.KeyAlias, this.MerchantId))
+                if (!string.Equals(KeyAlias, MerchantId))
                 {
-                    this.KeyAlias = this.MerchantId;
-                    this.Logger.Warn(
-                        $"{(object) Constants.WarningPrefix} Incorrect value of KeyAlias provided. Assigning the value of: [MerchantID]");
+                    KeyAlias = MerchantId;
+                    //Logger.Warn($"{Constants.WarningPrefix} Incorrect value of KeyAlias provided. Assigning the value of: [MerchantID]");
                 }
 
-                if (string.IsNullOrEmpty(this.KeyPass))
+                if (string.IsNullOrEmpty(KeyPass))
                 {
-                    this.KeyPass = this.MerchantId;
-                    this.Logger.Warn(
-                        $"{(object) Constants.WarningPrefix} KeyPassword not provided. Assigning the value of: [MerchantID]");
+                    KeyPass = MerchantId;
+                    //Logger.Warn($"{Constants.WarningPrefix} KeyPassword not provided. Assigning the value of: [MerchantID]");
                 }
 
-                if (string.IsNullOrEmpty(this.KeyDirectory))
+                if (string.IsNullOrEmpty(KeyDirectory))
                 {
-                    this.KeyDirectory = Constants.P12FileDirectory;
-                    this.Logger.Warn(
-                        $"{(object) Constants.WarningPrefix} KeysDirectory not provided. Using Default Path: {(object) this.KeyDirectory}");
+                    KeyDirectory = Constants.P12FileDirectory;
+                    //Logger.Warn($"{Constants.WarningPrefix} KeysDirectory not provided. Using Default Path: {KeyDirectory}");
                 }
 
-                if (string.IsNullOrEmpty(this.KeyfileName))
+                if (string.IsNullOrEmpty(KeyfileName))
                 {
-                    this.KeyfileName = this.MerchantId;
-                    this.Logger.Warn(
-                        $"{(object) Constants.WarningPrefix} KeyfileName not provided. Assigning the value of: [MerchantId]");
+                    KeyfileName = MerchantId;
+                    //Logger.Warn($"{Constants.WarningPrefix} KeyfileName not provided. Assigning the value of: [MerchantId]");
                 }
 
-                this.P12Keyfilepath = this.KeyDirectory + "\\" + this.KeyfileName + ".p12";
+                P12Keyfilepath = KeyDirectory + "\\" + KeyfileName + ".p12";
             }
         }
     }

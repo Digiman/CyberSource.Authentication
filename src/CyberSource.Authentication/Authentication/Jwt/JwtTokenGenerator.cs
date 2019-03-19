@@ -27,16 +27,24 @@ namespace CyberSource.Authentication.Authentication.Jwt
             _jwtToken = new JwtToken(_merchantConfig);
         }
 
+        /// <summary>
+        /// Generate JWT token based on authentication type.
+        /// </summary>
+        /// <returns>Returns generated token.</returns>
         public Token GetToken()
         {
             _jwtToken.BearerToken = SetToken();
-            return (Token) _jwtToken;
+            return _jwtToken;
         }
+
+        #region Helpers and main logic.
 
         private static string GenerateDigest(string requestJsonData)
         {
             using (SHA256 shA256 = SHA256.Create())
+            {
                 return Convert.ToBase64String(shA256.ComputeHash(Encoding.UTF8.GetBytes(requestJsonData)));
+            }
         }
 
         private string SetToken()
@@ -62,17 +70,16 @@ namespace CyberSource.Authentication.Authentication.Jwt
             {
                 {
                     "v-c-merchant-id",
-                    (object) _jwtToken.KeyAlias
+                    _jwtToken.KeyAlias
                 },
                 {
                     "x5c",
-                    (object) new List<string>() {base64String}
+                    new List<string> {base64String}
                 }
             };
             RSA rsa = rsaPrivateKey;
             Dictionary<string, object> dictionary2 = dictionary1;
-            return JWT.Encode(payload, (object) rsa, JwsAlgorithm.RS256, (IDictionary<string, object>) dictionary2,
-                (JwtSettings) null);
+            return JWT.Encode(payload, rsa, JwsAlgorithm.RS256, dictionary2, null);
         }
 
         private string TokenForCategory2()
@@ -97,17 +104,18 @@ namespace CyberSource.Authentication.Authentication.Jwt
             {
                 {
                     "v-c-merchant-id",
-                    (object) _jwtToken.KeyAlias
+                    _jwtToken.KeyAlias
                 },
                 {
                     "x5c",
-                    (object) new List<string>() {base64String}
+                    new List<string>() {base64String}
                 }
             };
             RSA rsa = rsaPrivateKey;
             Dictionary<string, object> dictionary2 = dictionary1;
-            return JWT.Encode(payload, (object) rsa, JwsAlgorithm.RS256, (IDictionary<string, object>) dictionary2,
-                (JwtSettings) null);
+            return JWT.Encode(payload, rsa, JwsAlgorithm.RS256, dictionary2, null);
         }
+
+        #endregion
     }
 }

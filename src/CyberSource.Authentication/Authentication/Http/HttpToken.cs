@@ -9,10 +9,16 @@ namespace CyberSource.Authentication.Authentication.Http
     /// </summary>
     public sealed class HttpToken : Token
     {
+        /// <summary>
+        /// Signature algorithm.
+        /// </summary>
         public string SignatureAlgorithm { get; set; }
 
         public string GmtDateTime { get; set; }
 
+        /// <summary>
+        /// Merchant Id (same as orginization Id).
+        /// </summary>
         public string MerchantId { get; set; }
 
         public string MerchantSecretKey { get; set; }
@@ -44,7 +50,7 @@ namespace CyberSource.Authentication.Authentication.Http
             MerchantId = merchantConfig.MerchantId;
             MerchantSecretKey = merchantConfig.MerchantSecretKey;
             MerchantKeyId = merchantConfig.MerchantKeyId;
-            HttpSignRequestTarget = merchantConfig.RequestType.ToLower() + " " + merchantConfig.RequestTarget;
+            HttpSignRequestTarget = $"{merchantConfig.RequestType.ToString().ToLower()} {merchantConfig.RequestTarget}";
         }
     }
 }

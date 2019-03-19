@@ -10,7 +10,7 @@ namespace CyberSource.Authentication.Interfaces
         /// <summary>
         /// Generate token based on authentication type.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns generated token.</returns>
         Token GetToken();
     }
 }

@@ -3,9 +3,15 @@
     /// <summary>
     /// Supported authentication types.
     /// </summary>
-    internal enum AuthenticationType
+    public enum AuthenticationType
     {
+        /// <summary>
+        /// HTTP Signature for authentication.
+        /// </summary>
         HTTP_SIGNATURE,
+        /// <summary>
+        /// JWT token for authentication.
+        /// </summary>
         JWT
     }
 }
