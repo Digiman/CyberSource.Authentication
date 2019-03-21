@@ -9,6 +9,7 @@
         /// HTTP Signature for authentication.
         /// </summary>
         HTTP_SIGNATURE,
+
         /// <summary>
         /// JWT token for authentication.
         /// </summary>

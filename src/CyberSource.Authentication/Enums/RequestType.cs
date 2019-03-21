@@ -9,18 +9,22 @@
         /// GET method.
         /// </summary>
         GET,
+
         /// <summary>
         /// POST method.
         /// </summary>
         POST,
+
         /// <summary>
         /// PUT method.
         /// </summary>
         PUT,
+
         /// <summary>
         /// DELETE method.
         /// </summary>
         DELETE,
+
         /// <summary>
         /// PATCH method.
         /// </summary>

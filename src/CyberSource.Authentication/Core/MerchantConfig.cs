@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using CyberSource.Authentication.Enums;
 using CyberSource.Authentication.Exceptions;
 using CyberSource.Authentication.Util;
@@ -50,6 +51,8 @@ namespace CyberSource.Authentication.Core
 
         public RequestType RequestType { get; set; }
 
+        #region Internal properties.
+
         public bool IsGetRequest { get; set; }
 
         public bool IsPostRequest { get; set; }
@@ -63,6 +66,8 @@ namespace CyberSource.Authentication.Core
         public bool IsHttpSignAuthType { get; set; }
 
         public bool IsJwtTokenAuthType { get; set; }
+
+        #endregion
 
         /// <summary>
         /// Initialize configuration from the dictionary.
@@ -171,34 +176,39 @@ namespace CyberSource.Authentication.Core
                 if (string.IsNullOrEmpty(KeyAlias))
                 {
                     KeyAlias = MerchantId;
+                    // TODO: replace with ILogger common for .NET Core
                     //Logger.Warn($"{Constants.WarningPrefix} KeyAlias not provided. Assigning the value of: [MerchantID]");
                 }
 
                 if (!string.Equals(KeyAlias, MerchantId))
                 {
                     KeyAlias = MerchantId;
+                    // TODO: replace with ILogger common for .NET Core
                     //Logger.Warn($"{Constants.WarningPrefix} Incorrect value of KeyAlias provided. Assigning the value of: [MerchantID]");
                 }
 
                 if (string.IsNullOrEmpty(KeyPass))
                 {
                     KeyPass = MerchantId;
+                    // TODO: replace with ILogger common for .NET Core
                     //Logger.Warn($"{Constants.WarningPrefix} KeyPassword not provided. Assigning the value of: [MerchantID]");
                 }
 
                 if (string.IsNullOrEmpty(KeyDirectory))
                 {
                     KeyDirectory = Constants.P12FileDirectory;
+                    // TODO: replace with ILogger common for .NET Core
                     //Logger.Warn($"{Constants.WarningPrefix} KeysDirectory not provided. Using Default Path: {KeyDirectory}");
                 }
 
                 if (string.IsNullOrEmpty(KeyfileName))
                 {
                     KeyfileName = MerchantId;
+                    // TODO: replace with ILogger common for .NET Core
                     //Logger.Warn($"{Constants.WarningPrefix} KeyfileName not provided. Assigning the value of: [MerchantId]");
                 }
 
-                P12Keyfilepath = KeyDirectory + "\\" + KeyfileName + ".p12";
+                P12Keyfilepath = Path.Combine(KeyDirectory, KeyfileName + ".p12");
             }
         }
     }
