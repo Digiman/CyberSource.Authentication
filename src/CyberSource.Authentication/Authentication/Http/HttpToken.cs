@@ -21,10 +21,16 @@ namespace CyberSource.Authentication.Authentication.Http
         /// </summary>
         public string MerchantId { get; set; }
 
+        /// <summary>
+        /// Merchant secret key.
+        /// </summary>
         public string MerchantSecretKey { get; set; }
 
         public string RequestJsonData { get; }
 
+        /// <summary>
+        /// Host name.
+        /// </summary>
         public string HostName { get; }
 
         public string HttpSignRequestTarget { get; set; }

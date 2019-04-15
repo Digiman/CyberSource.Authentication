@@ -11,7 +11,14 @@ namespace CyberSource.Authentication.Authentication.Http
     /// </summary>
     public sealed class HttpTokenGenerator : ITokenGenerator
     {
+        /// <summary>
+        /// Configuration for merchant.
+        /// </summary>
         private readonly MerchantConfig _merchantConfig;
+
+        /// <summary>
+        /// Token.
+        /// </summary>
         private readonly HttpToken _httpToken;
 
         /// <summary>

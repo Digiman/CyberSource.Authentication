@@ -14,7 +14,14 @@ namespace CyberSource.Authentication.Authentication.Jwt
     /// </summary>
     public sealed class JwtTokenGenerator : ITokenGenerator
     {
+        /// <summary>
+        /// Configuration for merchant.
+        /// </summary>
         private readonly MerchantConfig _merchantConfig;
+
+        /// <summary>
+        /// Token.
+        /// </summary>
         private readonly JwtToken _jwtToken;
 
         /// <summary>

@@ -11,11 +11,16 @@ namespace CyberSource.Authentication.Authentication.Jwt
     /// </summary>
     public sealed class JwtToken : Token
     {
+        #region Variables.
+
         /// <summary>
         /// Access token.
         /// </summary>
         public string BearerToken { get; set; }
 
+        /// <summary>
+        /// Json data in request.
+        /// </summary>
         public string RequestJsonData { get; set; }
 
         /// <summary>
@@ -28,6 +33,9 @@ namespace CyberSource.Authentication.Authentication.Jwt
         /// </summary>
         public string P12FilePath { get; set; }
 
+        /// <summary>
+        /// Key alias.
+        /// </summary>
         public string KeyAlias { get; set; }
 
         /// <summary>
@@ -39,6 +47,8 @@ namespace CyberSource.Authentication.Authentication.Jwt
         /// Certificate.
         /// </summary>
         public X509Certificate2 Certificate { get; }
+
+        #endregion
 
         /// <summary>
         /// Initialize JWT token from Merchant Config.

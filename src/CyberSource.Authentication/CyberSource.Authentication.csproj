@@ -8,6 +8,7 @@
     <Copyright>Copyright © CyberSource 2019</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.1.0</Version>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

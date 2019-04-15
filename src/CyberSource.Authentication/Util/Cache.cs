@@ -14,6 +14,12 @@ namespace CyberSource.Authentication.Util
     /// </summary>
     public static class Cache
     {
+        /// <summary>
+        /// Get certificate from the cache on local machine.
+        /// </summary>
+        /// <param name="p12FilePath">File wth certificate to fetch.</param>
+        /// <param name="keyPassword">Password for key.</param>
+        /// <returns>Returns certificate.</returns>
         public static X509Certificate2 FetchCachedCertificate(string p12FilePath, string keyPassword)
         {
             try
