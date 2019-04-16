@@ -5,6 +5,9 @@
     /// </summary>
     public static class Constants
     {
+        /// <summary>
+        /// Default signature algorithm.
+        /// </summary>
         public static readonly string SignatureAlgorithm = "HmacSHA256";
 
         //public static readonly string HostName = "apitest.cybersource.com";

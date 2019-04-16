@@ -61,7 +61,7 @@ namespace CyberSource.Authentication.Core
         public string KeyPass { get; set; }
 
         /// <summary>
-        /// Timeout.
+        /// Timeout (???).
         /// </summary>
         public string TimeOut { get; set; }
 

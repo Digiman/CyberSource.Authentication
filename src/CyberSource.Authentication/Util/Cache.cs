@@ -7,7 +7,8 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CyberSource.Authentication.Util
 {
-    // TODO: work better with cache in .NET core.
+    // TODO: Need to test this update!
+    // TODO: need to think how it would be better with caching in .NET core.
 
     /// <summary>
     /// Implementation in memory cache to store certificates.
