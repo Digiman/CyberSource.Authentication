@@ -11,7 +11,14 @@ namespace CyberSource.Authentication.Authentication.Http
     /// </summary>
     public sealed class HttpTokenGenerator : ITokenGenerator
     {
+        /// <summary>
+        /// Configuration for merchant.
+        /// </summary>
         private readonly MerchantConfig _merchantConfig;
+
+        /// <summary>
+        /// Token.
+        /// </summary>
         private readonly HttpToken _httpToken;
 
         /// <summary>
@@ -30,13 +37,17 @@ namespace CyberSource.Authentication.Authentication.Http
         /// <returns>Returns generated token.</returns>
         public Token GetToken()
         {
-            _httpToken.SignatureParam = SetSignatureParam();
+            _httpToken.SignatureParam = GenerateSignatureParam();
             return _httpToken;
         }
 
         #region Helpers and main logic.
 
-        private string SetSignatureParam()
+        /// <summary>
+        /// Generate Signature Param.
+        /// </summary>
+        /// <returns>Returns generated string with secure signature.</returns>
+        private string GenerateSignatureParam()
         {
             string str = string.Empty;
             if (_merchantConfig.IsGetRequest || _merchantConfig.IsDeleteRequest)
@@ -122,6 +133,11 @@ namespace CyberSource.Authentication.Authentication.Http
             return stringBuilder2.ToString();
         }
         
+        /// <summary>
+        /// Generate signature.
+        /// </summary>
+        /// <param name="value">Value to use as bae to generate signature.</param>
+        /// <returns>Returns generated signature.</returns>
         private string GenerateSignature(string value)
         {
             string signature =

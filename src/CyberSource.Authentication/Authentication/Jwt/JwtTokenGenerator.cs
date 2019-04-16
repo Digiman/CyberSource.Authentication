@@ -14,7 +14,14 @@ namespace CyberSource.Authentication.Authentication.Jwt
     /// </summary>
     public sealed class JwtTokenGenerator : ITokenGenerator
     {
+        /// <summary>
+        /// Configuration for merchant.
+        /// </summary>
         private readonly MerchantConfig _merchantConfig;
+
+        /// <summary>
+        /// Token.
+        /// </summary>
         private readonly JwtToken _jwtToken;
 
         /// <summary>
@@ -33,12 +40,17 @@ namespace CyberSource.Authentication.Authentication.Jwt
         /// <returns>Returns generated token.</returns>
         public Token GetToken()
         {
-            _jwtToken.BearerToken = SetToken();
+            _jwtToken.BearerToken = GenerateToken();
             return _jwtToken;
         }
 
         #region Helpers and main logic.
 
+        /// <summary>
+        /// Generate digest based on SHA256 algorithm.
+        /// </summary>
+        /// <param name="requestJsonData">Request json data.</param>
+        /// <returns>Returns generated digest.</returns>
         private static string GenerateDigest(string requestJsonData)
         {
             using (SHA256 shA256 = SHA256.Create())
@@ -47,7 +59,11 @@ namespace CyberSource.Authentication.Authentication.Jwt
             }
         }
 
-        private string SetToken()
+        /// <summary>
+        /// Generate bearer token.
+        /// </summary>
+        /// <returns>Returns generated token.</returns>
+        private string GenerateToken()
         {
             string str = string.Empty;
             if (_merchantConfig.IsGetRequest || _merchantConfig.IsDeleteRequest)
@@ -58,6 +74,10 @@ namespace CyberSource.Authentication.Authentication.Jwt
             return str;
         }
 
+        /// <summary>
+        /// Generate token for GET or DELETE requests.
+        /// </summary>
+        /// <returns>Returns generated token.</returns>
         private string TokenForCategory1()
         {
             DateTime dateTime = DateTime.Now;
@@ -82,6 +102,10 @@ namespace CyberSource.Authentication.Authentication.Jwt
             return JWT.Encode(payload, rsa, JwsAlgorithm.RS256, dictionary2, null);
         }
 
+        /// <summary>
+        /// Generate token for POST, PUT or PATCH requests.
+        /// </summary>
+        /// <returns>Returns generated token.</returns>
         private string TokenForCategory2()
         {
             string[] strArray = new string[5]

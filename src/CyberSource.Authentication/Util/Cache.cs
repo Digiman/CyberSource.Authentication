@@ -7,13 +7,20 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CyberSource.Authentication.Util
 {
-    // TODO: work better with cache in .NET core.
+    // TODO: Need to test this update!
+    // TODO: need to think how it would be better with caching in .NET core.
 
     /// <summary>
     /// Implementation in memory cache to store certificates.
     /// </summary>
     public static class Cache
     {
+        /// <summary>
+        /// Get certificate from the cache on local machine.
+        /// </summary>
+        /// <param name="p12FilePath">File wth certificate to fetch.</param>
+        /// <param name="keyPassword">Password for key.</param>
+        /// <returns>Returns certificate.</returns>
         public static X509Certificate2 FetchCachedCertificate(string p12FilePath, string keyPassword)
         {
             try

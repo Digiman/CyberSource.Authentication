@@ -11,6 +11,9 @@ namespace CyberSource.Authentication.Core
     /// </summary>
     public sealed class Authorize
     {
+        /// <summary>
+        /// Configuration for merchant.
+        /// </summary>
         private readonly MerchantConfig _merchantConfig;
 
         /// <summary>

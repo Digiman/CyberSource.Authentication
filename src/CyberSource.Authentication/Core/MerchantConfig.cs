@@ -15,32 +15,74 @@ namespace CyberSource.Authentication.Core
     /// </summary>
     public sealed class MerchantConfig
     {
+        /// <summary>
+        /// Merchant Id.
+        /// </summary>
         public string MerchantId { get; set; }
 
+        /// <summary>
+        /// Merchant secret key.
+        /// </summary>
         public string MerchantSecretKey { get; set; }
 
+        /// <summary>
+        /// Merchant KeyId.
+        /// </summary>
         public string MerchantKeyId { get; set; }
 
+        /// <summary>
+        /// Authentication type.
+        /// </summary>
         public AuthenticationType AuthenticationType { get; set; }
 
+        /// <summary>
+        /// Folder with keys.
+        /// </summary>
         public string KeyDirectory { get; set; }
 
+        /// <summary>
+        /// Key name.
+        /// </summary>
         public string KeyfileName { get; set; }
 
+        /// <summary>
+        /// Environment - path to api.
+        /// </summary>
         public string RunEnvironment { get; set; }
 
+        /// <summary>
+        /// Key alias.
+        /// </summary>
         public string KeyAlias { get; set; }
 
+        /// <summary>
+        /// Key password.
+        /// </summary>
         public string KeyPass { get; set; }
 
+        /// <summary>
+        /// Timeout (???).
+        /// </summary>
         public string TimeOut { get; set; }
 
+        /// <summary>
+        /// Proxy server address.
+        /// </summary>
         public string ProxyAddress { get; set; }
 
+        /// <summary>
+        /// Proxy server port.
+        /// </summary>
         public string ProxyPort { get; set; }
 
+        /// <summary>
+        /// Host name.
+        /// </summary>
         public string HostName { get; set; }
 
+        /// <summary>
+        /// Filepath to key file.
+        /// </summary>
         public string P12Keyfilepath { get; set; }
 
         public string RequestTarget { get; set; }
@@ -49,22 +91,46 @@ namespace CyberSource.Authentication.Core
 
         public string RequestJsonData { get; set; }
 
+        /// <summary>
+        /// Type of the request.
+        /// </summary>
         public RequestType RequestType { get; set; }
 
         #region Internal properties.
 
+        /// <summary>
+        /// Is it GET request?
+        /// </summary>
         public bool IsGetRequest { get; set; }
 
+        /// <summary>
+        /// Is it POST request?
+        /// </summary>
         public bool IsPostRequest { get; set; }
 
+        /// <summary>
+        /// Is it PUT request?
+        /// </summary>
         public bool IsPutRequest { get; set; }
 
+        /// <summary>
+        /// Is it DELETE request?
+        /// </summary>
         public bool IsDeleteRequest { get; set; }
 
+        /// <summary>
+        /// Is it PATCH request?
+        /// </summary>
         public bool IsPatchRequest { get; set; }
 
+        /// <summary>
+        /// Is it Http Signature?
+        /// </summary>
         public bool IsHttpSignAuthType { get; set; }
 
+        /// <summary>
+        /// Is it JWT token auth?
+        /// </summary>
         public bool IsJwtTokenAuthType { get; set; }
 
         #endregion

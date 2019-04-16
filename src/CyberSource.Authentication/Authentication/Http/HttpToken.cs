@@ -9,11 +9,16 @@ namespace CyberSource.Authentication.Authentication.Http
     /// </summary>
     public sealed class HttpToken : Token
     {
+        #region Variables.
+
         /// <summary>
         /// Signature algorithm.
         /// </summary>
         public string SignatureAlgorithm { get; set; }
 
+        /// <summary>
+        /// Date in GMT format.
+        /// </summary>
         public string GmtDateTime { get; set; }
 
         /// <summary>
@@ -21,19 +26,42 @@ namespace CyberSource.Authentication.Authentication.Http
         /// </summary>
         public string MerchantId { get; set; }
 
+        /// <summary>
+        /// Merchant secret key.
+        /// </summary>
         public string MerchantSecretKey { get; set; }
 
+        /// <summary>
+        /// Data in response as string with JSON.
+        /// </summary>
         public string RequestJsonData { get; }
 
+        /// <summary>
+        /// Host name (???).
+        /// </summary>
         public string HostName { get; }
 
+        /// <summary>
+        /// String with HTTP sign for request.
+        /// </summary>
         public string HttpSignRequestTarget { get; set; }
 
+        /// <summary>
+        /// Merchant Key Id.
+        /// </summary>
         public string MerchantKeyId { get; set; }
 
+        /// <summary>
+        /// Generated digest based on SHA256 algorithm.
+        /// </summary>
         public string Digest { get; set; }
 
+        /// <summary>
+        /// Secure signature generated based on token data and digest.
+        /// </summary>
         public string SignatureParam { get; set; }
+
+        #endregion
 
         /// <summary>
         /// Initialize token from Merchant Config.
